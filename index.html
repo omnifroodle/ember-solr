@@ -23,23 +23,41 @@
   <script type="text/x-handlebars" >
     {{#view App.MyView}}
     <div class="container">
-      <h1 href="#" >Search for {{App.solr.terms}}</h1>
-      {{view Em.TextField valueBinding="App.solr.terms" type="search"}}
 
-      <h3>{{App.solr.numFound}} results </h3>
-      {{#each App.solr.results}}
-        <article class="row">
-          <div class="span2 price">
-            <h1>${{price}}</h1>
-            <img src="http://www.zappos.com/images/{{unbound image_LARGE_SEARCH_p}}" />
-          </div>
-          <div class="span10">
-            <a href="#"><h1>{{productName}}</h1></a>
-            <h3>{{brandName}}</h3>
-            {{{productDescription}}}
-          </div>
-        </article>
-      {{/each}}
+      <div class="row">
+        <div class="span3">
+          <h1 href="#" >Search for {{App.solr.terms}}</h1>
+          {{view Em.TextField valueBinding="App.solr.terms" type="search"}}
+          <h3>{{App.solr.numFound}} results </h3>
+
+          <ul class="nav nav-pills nav-stacked">
+            {{#each App.solr.facet_fields.content}}
+              <li class="nav-header">{{label}}</li>
+              {{#each value}}
+                {{label}}
+                {{#view App.solr.facet contentBinding="this"}}
+                  <li><a href="#" {{action "toggle_facet"}}>{{content.label}} ({{content.count}})</a></li>
+                {{/view}}
+              {{/each}}
+            {{/each}}
+          </ul>
+        </div>
+        <div class="span9">
+          {{#each App.solr.results}}
+            <article class="row">
+              <div class="span2 price">
+                <h1>${{price}}</h1>
+                <img src="http://www.zappos.com/images/{{unbound image_LARGE_SEARCH_p}}" />
+              </div>
+              <div class="span7">
+                <a href="#"><h1>{{productName}}</h1></a>
+                <h3>{{brandName}}</h3>
+                {{{productDescription}}}
+              </div>
+            </article>
+          {{/each}}
+        </div>
+      </div>
     </div>
     {{/view}}
   </script>
