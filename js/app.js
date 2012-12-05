@@ -19,15 +19,16 @@ App.solr = Em.Object.create({
   query: function() {
     $.ajax({
       url: this.get('url'),
-      data: {
+      data: { //TODO move this out of this function into it's own child object
         q: this.get('terms'),
         wt: 'json',
-        qt: 'dismaxtax',
-        df: 'productDescription',
+        /*
+         *qt: 'dismaxtax',
+         *df: 'productDescription',
+         */
         facet: 'true',
-        'facet.field': 'gender',
-        'facet.mincount': 1,
-        //'fq': 'gender:womens'
+        'facet.field': this.get('facets'),
+        'facet.mincount': 1
       },
       success: function(data) {
         App.solr.set('start', data.response.start);
@@ -41,9 +42,10 @@ App.solr = Em.Object.create({
           // something usable
           var flat_facet_counts = data.facet_counts.facet_fields[key];
           var values = [];
+          console.log(data.facet_counts.facet_fields);
           for(i = 0; i < flat_facet_counts.length; i = i + 2 ){
             values.push({
-              label: flat_facet_counts[i], 
+              label: flat_facet_counts[i],
               count: flat_facet_counts[i + 1],
               facet_field: key
             });
@@ -66,9 +68,7 @@ App.solr = Em.Object.create({
   facet_fields: Em.ArrayController.create(),
   facet_queries: Em.ArrayController.create(),
   facet: Em.View.extend({
-    toggle_facet: function(event) {
-      console.log(event);
-      window.e = event;
+    toggleFacet: function(event) {
       console.log(this.getPath('content'));
       var facet = this.getPath('content');
       App.solr.facet_queries.set('content', []);

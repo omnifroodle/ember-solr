@@ -34,9 +34,9 @@
             {{#each App.solr.facet_fields.content}}
               <li class="nav-header">{{label}}</li>
               {{#each value}}
-                {{label}}
+                {{this.label}}
                 {{#view App.solr.facet contentBinding="this"}}
-                  <li><a href="#" {{action "toggle_facet"}}>{{content.label}} ({{content.count}})</a></li>
+                <li><a {{action toggleFacet}}>{{content.label}} ({{content.count}})</a></li>
                 {{/view}}
               {{/each}}
             {{/each}}
@@ -47,12 +47,16 @@
             <article class="row">
               <div class="span2 price">
                 <h1>${{price}}</h1>
-                <img src="http://www.zappos.com/images/{{unbound image_LARGE_SEARCH_p}}" />
+                <h3>{{manu}}</h3>
               </div>
               <div class="span7">
-                <a href="#"><h1>{{productName}}</h1></a>
-                <h3>{{brandName}}</h3>
-                {{{productDescription}}}
+                <a href="#"><h1>{{name}}</h1></a>
+                {{productDescription}}
+                <ul>
+                  {{#each features}}
+                    <li>{{this}}</li>
+                  {{/each}}
+                </ul>
               </div>
             </article>
           {{/each}}
@@ -67,7 +71,11 @@
   <script src="js/libs/ember-0.9.4.min.js"></script>
   <script src="js/app.js"></script>
   <script type="text/javascript">
-    $(App.solr.set('url', 'http://localhost:8983/solr');
+    $(document).ready(function() {
+        console.log(App.solr); 
+        App.solr.set('facets', 'inStock'); //this will need to be more than a string
+        App.solr.set('url', 'http://localhost:8983/solr/select');
+        });
   </script>
 </body>
 </html>
